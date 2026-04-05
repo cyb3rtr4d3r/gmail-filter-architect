@@ -1,0 +1,30 @@
+{
+    "version":  "0.1.0",
+    "name":  "gmail-filter-architect",
+    "scripts":  {
+                    "lint":  "next lint",
+                    "build":  "next build",
+                    "dev":  "next dev",
+                    "start":  "next start"
+                },
+    "devDependencies":  {
+                            "@types/react":  "^18",
+                            "typescript":  "^5",
+                            "eslint":  "^8",
+                            "postcss":  "^8",
+                            "autoprefixer": "^10.4.19",
+                            "tailwindcss":  "^4.0.0",
+                            "@tailwindcss/postcss": "^4.0.0",
+                            "@types/node":  "^20",
+                            "eslint-config-next":  "^15.0.0",
+                            "@types/react-dom":  "^18"
+                        },
+    "dependencies":  {
+                         "lucide-react": "latest",
+                         "react":  "^19.0.0-rc",
+                         "react-dom":  "^19.0.0-rc",
+                         "next":  "^15.0.0",
+                         "fast-xml-parser":  "^4.3.5"
+                     },
+    "private":  true
+}
