@@ -28,7 +28,7 @@ export function exportFilters(filters: FilterRule[]): string {
         xml += `\t\t<content></content>\n`;
         
         // Exclude our internal application state properties
-        const excludeFields = ['id', 'status', 'domains'];
+        const excludeFields = ['id', 'status', 'domains', 'auditWarning', 'complexityScore'];
         
         Object.keys(rule).forEach(key => {
             if (!excludeFields.includes(key)) {

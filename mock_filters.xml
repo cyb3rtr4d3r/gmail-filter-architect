@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom' xmlns:apps='http://schemas.google.com/apps/2006'>
+	<title>Mail Filters</title>
+	
+	<!-- 1. Normal standalone filter -->
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='from' value='newsletter@nytimes.com'/>
+		<apps:property name='label' value='News'/>
+		<apps:property name='shouldNeverSpam' value='true'/>
+	</entry>
+
+	<!-- 2. Conflict Group 1: Same criteria, conflicting actions -->
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='from' value='receipts@amazon.com'/>
+		<apps:property name='shouldArchive' value='true'/>
+		<apps:property name='label' value='Purchases'/>
+	</entry>
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<!-- Exact criteria as above -->
+		<apps:property name='from' value='receipts@amazon.com'/>
+		<!-- Action conflicts: keeps it in inbox, marks as read -->
+		<apps:property name='shouldMarkAsRead' value='true'/>
+		<apps:property name='label' value='Amazon'/>
+	</entry>
+
+	<!-- 3. Duplicate Group 1: Exact same criteria AND same actions -->
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='to' value='pavel.test@gmail.com'/>
+		<apps:property name='subject' value='[JIRA]'/>
+		<apps:property name='shouldArchive' value='true'/>
+		<apps:property name='label' value='Work/Tickets'/>
+	</entry>
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='to' value='pavel.test@gmail.com'/>
+		<apps:property name='subject' value='[JIRA]'/>
+		<apps:property name='shouldArchive' value='true'/>
+		<apps:property name='label' value='Work/Tickets'/>
+	</entry>
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='to' value='pavel.test@gmail.com'/>
+		<apps:property name='subject' value='[JIRA]'/>
+		<apps:property name='shouldArchive' value='true'/>
+		<apps:property name='label' value='Work/Tickets'/>
+	</entry>
+
+	<!-- 4. Complex filter -->
+	<entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='from' value='alert@monitoring.sys OR daemon@monitoring.sys'/>
+		<apps:property name='hasTheWord' value='(CRITICAL OR ERROR OR WARNING)'/>
+		<apps:property name='shouldStar' value='true'/>
+		<apps:property name='shouldAlwaysMarkAsImportant' value='true'/>
+	</entry>
+    
+    <!-- 5. Conflict Group 2 -->
+    <entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='hasAttachment' value='true'/>
+		<apps:property name='sizeOperator' value='s_l'/>
+		<apps:property name='sizeUnit' value='s_mb'/>
+		<apps:property name='size' value='10'/>
+		<apps:property name='shouldTrash' value='true'/>
+	</entry>
+    <entry>
+		<category term='filter'></category>
+		<title>Mail Filter</title>
+		<content></content>
+		<apps:property name='hasAttachment' value='true'/>
+		<apps:property name='sizeOperator' value='s_l'/>
+		<apps:property name='sizeUnit' value='s_mb'/>
+		<apps:property name='size' value='10'/>
+		<apps:property name='label' value='Large Files'/>
+        <!-- Conflicting actions (one trashes, one labels and keeps) -->
+	</entry>
+
+</feed>

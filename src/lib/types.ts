@@ -24,4 +24,6 @@ export interface FilterRule {
   // Custom tool properties
   status?: 'active' | 'draft';
   domains?: string[];
+  auditWarning?: 'duplicate' | 'conflict';
+  complexityScore?: number;
 }
