@@ -3,11 +3,12 @@
 import { useState, useMemo } from 'react';
 import { UploadDropzone } from '@/components/UploadDropzone';
 import { FilterCard } from '@/components/FilterCard';
+import { FilterTable } from '@/components/FilterTable';
 import { parseFilters } from '@/lib/parser';
 import { exportFilters } from '@/lib/exporter';
 import { groupFiltersByDomain, analyzeFilters } from '@/lib/engine';
 import { FilterRule } from '@/lib/types';
-import { FileText, Save, ListFilter, AlertCircle, CheckCircle2, Archive, Settings2, Trash2 } from 'lucide-react';
+import { FileText, Save, ListFilter, AlertCircle, CheckCircle2, Archive, Settings2, Trash2, LayoutGrid, LayoutList } from 'lucide-react';
 
 export default function Home() {
   const [filters, setFilters] = useState<FilterRule[]>([]);
@@ -32,6 +33,7 @@ export default function Home() {
   const auditStats = useMemo(() => analyzeFilters(filters), [filters]);
   
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'cards'|'table'>('cards');
   const [sortBy, setSortBy] = useState<'alphabetical'|'complexity'>('alphabetical');
   const [bulkLabelInput, setBulkLabelInput] = useState("");
   
@@ -142,7 +144,11 @@ export default function Home() {
                         Rule Explorer
                     </h2>
                     {totalFilters > 0 && (
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                                <button onClick={() => setViewMode('cards')} className={`p-1.5 rounded-md transition ${viewMode === 'cards' ? 'bg-white dark:bg-zinc-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`} title="Cards View"><LayoutGrid size={16} /></button>
+                                <button onClick={() => setViewMode('table')} className={`p-1.5 rounded-md transition ${viewMode === 'table' ? 'bg-white dark:bg-zinc-700 shadow-sm text-blue-600 dark:text-blue-400' : 'text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}`} title="Table View"><LayoutList size={16} /></button>
+                            </div>
                             <select 
                                 value={sortBy} 
                                 onChange={(e) => setSortBy(e.target.value as 'alphabetical' | 'complexity')}
@@ -151,7 +157,7 @@ export default function Home() {
                                 <option value="alphabetical">Sort Alphabetically</option>
                                 <option value="complexity">Sort by Complexity</option>
                             </select>
-                            <div className="text-sm font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-full">
+                            <div className="text-sm font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-full hidden sm:block">
                                 {Object.keys(groupedFilters).length} Domain Groups
                             </div>
                         </div>
@@ -194,31 +200,42 @@ export default function Home() {
                     </div>
                 ) : (
                     <div className="space-y-8 overflow-y-auto max-h-[700px] pr-2 custom-scrollbar">
-                        {Object.entries(groupedFilters).sort(([a], [b]) => a.localeCompare(b)).map(([domain, groupFilters]) => (
-                            <div key={domain} className="space-y-4">
-                                <h3 className="font-semibold text-lg flex items-center gap-3 text-zinc-800 dark:text-zinc-200 sticky top-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm py-2 z-10">
-                                    <span className="bg-blue-100 dark:bg-blue-900 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 px-2.5 py-0.5 rounded-md text-sm font-bold shadow-sm">
-                                        {groupFilters.length}
-                                    </span>
-                                    <span className={domain === '_Other' ? 'text-zinc-500 italic' : ''}>
-                                        {domain === '_Other' ? 'Miscellaneous / Uncategorized' : domain}
-                                    </span>
-                                </h3>
-                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pl-2 border-l-2 border-zinc-100 dark:border-zinc-800">
-                                    {[...groupFilters].sort((a,b) => {
-                                        if (sortBy === 'complexity') return (b.complexityScore || 0) - (a.complexityScore || 0);
-                                        return (a.from||a.subject||'').localeCompare(b.from||b.subject||'');
-                                    }).map(filter => (
-                                        <FilterCard 
-                                            key={filter.id} 
-                                            filter={filter} 
-                                            isSelected={selectedIds.has(filter.id)} 
-                                            onSelect={handleSelect} 
-                                        />
-                                    ))}
+                        {viewMode === 'cards' ? (
+                            Object.entries(groupedFilters).sort(([a], [b]) => a.localeCompare(b)).map(([domain, groupFilters]) => (
+                                <div key={domain} className="space-y-4">
+                                    <h3 className="font-semibold text-lg flex items-center gap-3 text-zinc-800 dark:text-zinc-200 sticky top-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm py-2 z-10">
+                                        <span className="bg-blue-100 dark:bg-blue-900 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300 px-2.5 py-0.5 rounded-md text-sm font-bold shadow-sm">
+                                            {groupFilters.length}
+                                        </span>
+                                        <span className={domain === '_Other' ? 'text-zinc-500 italic' : ''}>
+                                            {domain === '_Other' ? 'Miscellaneous / Uncategorized' : domain}
+                                        </span>
+                                    </h3>
+                                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 pl-2 border-l-2 border-zinc-100 dark:border-zinc-800">
+                                        {[...groupFilters].sort((a,b) => {
+                                            if (sortBy === 'complexity') return (b.complexityScore || 0) - (a.complexityScore || 0);
+                                            return (a.from||a.subject||'').localeCompare(b.from||b.subject||'');
+                                        }).map(filter => (
+                                            <FilterCard 
+                                                key={filter.id} 
+                                                filter={filter} 
+                                                isSelected={selectedIds.has(filter.id)} 
+                                                onSelect={handleSelect} 
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <FilterTable 
+                                filters={[...filters].sort((a,b) => {
+                                    if (sortBy === 'complexity') return (b.complexityScore || 0) - (a.complexityScore || 0);
+                                    return (a.from||a.subject||'').localeCompare(b.from||b.subject||'');
+                                })}
+                                selectedIds={selectedIds}
+                                onSelect={handleSelect}
+                            />
+                        )}
                     </div>
                 )}
             </div>
